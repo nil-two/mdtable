@@ -32,7 +32,7 @@ options:
 Requirements
 ------------
 
-- `column`
+- column
 
 Installation
 ------------
