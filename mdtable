@@ -1,0 +1,66 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  cat <<__USAGE__
+usage: ${0##*/} [<option(s)>] [<file(s)>]
+convert TSV to Markdown table.
+
+options:
+  -d, --deconvert  convert Markdown table to TSV
+      --help       print usage
+__USAGE__
+}
+
+warn() {
+  printf "%s\n" "${0##*/}: $*" >&2
+}
+
+deconvert=false
+is_help=false
+while [ $# -ge 1 ]; do
+  opt=$1
+  shift
+  case $opt in
+    -d|--deconvert)
+      deconvert=true
+      ;;
+    -d*)
+      deconvert=true
+      set -- "-${opt#-d}" "$@"
+      continue
+      ;;
+    --help)
+      is_help=true
+      ;;
+    --)
+      break
+      ;;
+    -*)
+      warn "unrecognized option '$opt'"
+      exit 1
+      ;;
+    *)
+      set -- "$opt" "$@"
+      break
+      ;;
+  esac
+done
+if $is_help; then
+  usage
+  exit 0
+fi
+
+if $deconvert; then
+  cat -- "$@" \
+    | sed '2d' \
+    | sed $'s/^| //; s/ |$//' \
+    | sed $'s/  *| /\t/g; s/ *$//'
+else
+  cat -- "$@" \
+    | sed $'1{p; s/[^\t]/-/g}' \
+    | sed $'s/^/-\t/; s/$/\t-/' \
+    | column -t -s $'\t' -o ' | ' \
+    | sed $'s/^- //; s/ -$//' \
+    | sed $'2s/[^|]/-/g'
+fi
