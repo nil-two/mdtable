@@ -51,16 +51,17 @@ if $is_help; then
   exit 0
 fi
 
+tab='	'
 if $deconvert; then
   cat -- "$@" \
     | sed '2d' \
-    | sed $'s/^| //; s/ |$//' \
-    | sed $'s/  *| /\t/g; s/ *$//'
+    | sed 's/^| //; s/ |$//' \
+    | sed 's/  *| /'"$tab"'/g; s/ *$//'
 else
   cat -- "$@" \
-    | sed $'1{p; s/[^\t]/-/g}' \
-    | sed $'s/^/-\t/; s/$/\t-/' \
-    | column -t -s $'\t' -o ' | ' \
-    | sed $'s/^- //; s/ -$//' \
-    | sed $'2s/[^|]/-/g'
+    | sed '1{p; s/[^'"$tab"']/-/g}' \
+    | sed 's/^/-'"$tab"'/; s/$/'"$tab"'-/' \
+    | column -t -s "$tab" -o ' | ' \
+    | sed 's/^- //; s/ -$//' \
+    | sed '2s/[^|]/-/g'
 fi
