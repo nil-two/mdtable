@@ -43,7 +43,7 @@ Installation
 ### Example
 
 ```
-$ curl -L https://raw.githubusercontent.com/kusabashira/mdtable/master/mdtable > ~/bin/mdtable
+$ curl -L https://raw.githubusercontent.com/nil2nekoni2/mdtable/master/mdtable > ~/bin/mdtable
 $ chmod +x ~/bin/mdtable
 ```
 
